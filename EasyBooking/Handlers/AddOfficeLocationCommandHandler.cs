@@ -26,7 +26,5 @@ public class AddOfficeLocationCommandHandler : IRequestHandler<AddOfficeLocation
         _context.OfficeLocations.Add(officeLocation);
         await _context.SaveChangesAsync();
         return _mapper.Map<OfficeLocationDto>(officeLocation);
-        // Todo
     }
-
 }

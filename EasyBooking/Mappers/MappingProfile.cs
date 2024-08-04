@@ -11,5 +11,7 @@ public class MappingProfile : Profile
     {
         CreateMap<Desk, DeskDto>();
         CreateMap<OfficeLocation, OfficeLocationDto>();
+        CreateMap<Employee, EmployeeDto>();
+
     }
 }

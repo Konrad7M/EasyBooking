@@ -8,12 +8,14 @@ namespace EasyBooking.Domain.Model;
 
 public class Employee
 {
-    public Employee(int id, string name)
+    public Employee(string name)
     {
-        Id = id;
         Name = name;
+        IsAdmin = false;
     }
 
     public int Id { get; set; }
     public string Name { get; set; }
+
+    public bool IsAdmin { get; set; }
 }

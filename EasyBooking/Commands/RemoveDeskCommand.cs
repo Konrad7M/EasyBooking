@@ -6,4 +6,9 @@ namespace EasyBooking.Api.Commands;
 public class RemoveDeskCommand : IRequest<DeskDto>
 {
     public int DeskId { get; }
+
+    public RemoveDeskCommand(int deskId) 
+    {
+        DeskId = deskId;
+    }
 }

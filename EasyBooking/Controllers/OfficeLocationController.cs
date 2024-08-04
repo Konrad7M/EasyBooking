@@ -41,6 +41,6 @@ public class OfficeLocationController : ControllerBase
     [ProducesResponseType(typeof(Unit), 200)]
     public async Task<IActionResult> RemoveDesk([FromBody] int deskId, CancellationToken cancellationToken)
     {
-        return Ok(await _mediator.Send(new RemoveOfficeLocationCommand(deskId), cancellationToken));
+        return Ok(await _mediator.Send(new RemoveDeskCommand(deskId), cancellationToken));
     }
 }

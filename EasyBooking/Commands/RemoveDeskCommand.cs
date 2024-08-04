@@ -1,6 +1,9 @@
-﻿namespace EasyBooking.Api.Commands;
+﻿using EasyBooking.Api.Dto;
+using MediatR;
 
-public class RemoveDeskCommand
+namespace EasyBooking.Api.Commands;
+
+public class RemoveDeskCommand : IRequest<DeskDto>
 {
-    public int Id { get; }
+    public int DeskId { get; }
 }

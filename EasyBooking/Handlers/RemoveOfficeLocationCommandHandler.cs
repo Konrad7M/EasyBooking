@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using EasyBooking.Api.Commands;
-using EasyBooking.Commands;
-using EasyBooking.Domain.Model;
-using EasyBooking.Dto;
 using EasyBooking.Infrastructure.Database;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +32,4 @@ public class RemoveOfficeLocationCommandHandler : IRequestHandler<RemoveOfficeLo
         await _context.SaveChangesAsync();
         return Unit.Value;
     }
-
-
-
 }

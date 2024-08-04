@@ -8,12 +8,11 @@ namespace EasyBooking.Domain.Model;
 
 public class Desk
 {
-    public Desk(int id, bool isAvailable)
+    public Desk(bool isAvailable = true)
     {
-        Id = id;
         IsAvailable = isAvailable;
-
     }
+
     public int Id { get; set; }
     public bool IsAvailable { get; set; }
 }

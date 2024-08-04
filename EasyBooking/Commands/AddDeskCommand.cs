@@ -1,9 +1,9 @@
-﻿using EasyBooking.Dto;
+﻿using EasyBooking.Api.Dto;
 using MediatR;
 
 namespace EasyBooking.Commands;
 
-public class AddDeskCommand : IRequest<OfficeLocationDto>
+public class AddDeskCommand : IRequest<DeskDto>
 {
     public int OfficeLocationId { get; }
 

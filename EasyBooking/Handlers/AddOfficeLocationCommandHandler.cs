@@ -21,8 +21,8 @@ public class AddOfficeLocationCommandHandler : IRequestHandler<AddOfficeLocation
 
     public async Task<OfficeLocationDto> Handle(AddOfficeLocationCommand request, CancellationToken cancellationToken)
     {
-        var officeLocation = new OfficeLocation(request.OfficeLocationDto.Id, request.OfficeLocationDto.LocationName);
-        request.OfficeLocationDto.Desks.ForEach(deskDto => officeLocation.AddDesk(new Desk(deskDto.Id, deskDto.IsAvailable)));
+        var officeLocation = new OfficeLocation(request.OfficeLocationDto.LocationName);
+        request.OfficeLocationDto.Desks.ForEach(deskDto => officeLocation.AddDesk(new Desk(deskDto.IsAvailable)));
         _context.OfficeLocations.Add(officeLocation);
         await _context.SaveChangesAsync();
         return _mapper.Map<OfficeLocationDto>(officeLocation);

@@ -29,4 +29,18 @@ public class OfficeLocationController : ControllerBase
     {
         return Ok(await _mediator.Send(new RemoveOfficeLocationCommand(officeLocationId), cancellationToken));
     }
+
+    [HttpPost("AddDesk")]
+    [ProducesResponseType(typeof(Unit), 200)]
+    public async Task<IActionResult> AddDesk([FromBody] int officeLocationId, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new AddDeskCommand(officeLocationId), cancellationToken));
+    }
+
+    [HttpDelete("RemoveDesk")]
+    [ProducesResponseType(typeof(Unit), 200)]
+    public async Task<IActionResult> RemoveDesk([FromBody] int deskId, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new RemoveOfficeLocationCommand(deskId), cancellationToken));
+    }
 }

@@ -6,7 +6,7 @@ using EasyBooking.Infrastructure.Database;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyBooking.Handlers;
+namespace EasyBooking.Api.Handlers;
 
 public class AddOfficeLocationCommandHandler : IRequestHandler<AddOfficeLocationCommand, OfficeLocationDto>
 {
@@ -21,10 +21,12 @@ public class AddOfficeLocationCommandHandler : IRequestHandler<AddOfficeLocation
 
     public async Task<OfficeLocationDto> Handle(AddOfficeLocationCommand request, CancellationToken cancellationToken)
     {
-        _context.OfficeLocations.Add(new OfficeLocation (request.OfficeLocationDto.Id,request.OfficeLocationDto.LocationName));
+        var officeLocation = new OfficeLocation(request.OfficeLocationDto.Id, request.OfficeLocationDto.LocationName);
+        request.OfficeLocationDto.Desks.ForEach(deskDto => officeLocation.AddDesk(new Desk(deskDto.Id, deskDto.IsAvailable)));
+        _context.OfficeLocations.Add(officeLocation);
         await _context.SaveChangesAsync();
-        var x = _context.OfficeLocations.FirstOrDefault();
-        return _mapper.Map<OfficeLocationDto>(x);
+        return _mapper.Map<OfficeLocationDto>(officeLocation);
+        // Todo
     }
 
 }

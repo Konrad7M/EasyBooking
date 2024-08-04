@@ -12,7 +12,8 @@ public class OfficeLocation
     public string LocationName { get; set; }
     public List<Desk> Desks { get; set; }
 
-    public OfficeLocation(int id,string locationName) { 
+    public OfficeLocation(int id,string locationName) 
+    { 
         Id = id;
         LocationName = locationName;
         Desks = new List<Desk>();

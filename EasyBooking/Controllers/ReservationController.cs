@@ -25,4 +25,10 @@ public class ReservationController : ControllerBase
         return Ok(await _mediator.Send(new GetDesksCommand(getDesksQueryDto.From, getDesksQueryDto.To, getDesksQueryDto.LocationId, getDesksQueryDto.IsAdmin, getDesksQueryDto.ShowAvailableOnly), cancellationToken));
     }
 
+    [HttpPut("ReverveDeskForAPeriod")]
+    [ProducesResponseType(typeof(ReservationDto), 200)]
+    public async Task<IActionResult> ReverveDeskForAPeriod([FromBody] ReservationDto reservationDto, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new ReserveDeskCommand(reservationDto.ReservingEmployeeId, reservationDto.ReservedDeskId,reservationDto.FromDate, reservationDto.ToDate), cancellationToken));
+    }
 }

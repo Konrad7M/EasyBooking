@@ -15,7 +15,7 @@ public class Reservation
     public DateOnly FromDate { get; private set; }
     public DateOnly ToDate { get; private set; }
 
-    public Reservation(int id, int reservedDeskId, int reservingEmployeeId, DateOnly fromDate, DateOnly toDate)
+    public Reservation(int reservedDeskId, int reservingEmployeeId, DateOnly fromDate, DateOnly toDate)
     {
         if (fromDate > toDate)
         {
@@ -26,7 +26,6 @@ public class Reservation
         {
             throw new ArgumentException("Reservation cannot be longer than a week");
         }
-        Id = id;
         ReservedDeskId = reservedDeskId;
         ReservingEmployeeId = reservingEmployeeId;
         FromDate = fromDate;

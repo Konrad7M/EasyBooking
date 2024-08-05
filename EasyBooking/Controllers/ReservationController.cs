@@ -1,7 +1,5 @@
 ﻿using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
-using EasyBooking.Commands;
-using EasyBooking.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +19,6 @@ public class ReservationController : ControllerBase
     [ProducesResponseType(typeof(List<DeskDto>), 200)]
     public async Task<IActionResult> GetDesksByLocationId([FromBody] GetDesksQueryDto getDesksQueryDto, CancellationToken cancellationToken)
     {
-        // todo: potrzebujesz wyslac komnde na postawie tych dat no dobrac sie do reserwacji bedzie musiał dla kazdego na start sprawdx ta flage czy id obiektu jest wyfiltruj  z z basy dokop sie do rezerwacji jest flaga do pokazania tylko available
         return Ok(await _mediator.Send(new GetDesksCommand(getDesksQueryDto.From, getDesksQueryDto.To, getDesksQueryDto.LocationId, getDesksQueryDto.IsAdmin, getDesksQueryDto.ShowAvailableOnly), cancellationToken));
     }
 
@@ -38,4 +35,12 @@ public class ReservationController : ControllerBase
     {
         return Ok(await _mediator.Send(new ReserveDeskCommand(reservationDto.ReservingEmployeeId, reservationDto.ReservedDeskId, reservationDto.FromDate, reservationDto.ToDate), cancellationToken));
     }
+
+    [HttpGet("GetReservationsByDeskId")]
+    [ProducesResponseType(typeof(List<ReservationDto>), 200)]
+    public async Task<IActionResult> GetReservationsByDeskID([FromBody] GetDeskReservationsQueryDto getDeskReservationsQueryDto, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new GetDeskReservationsCommand { DeskId = getDeskReservationsQueryDto.DeskId }));
+    }
+
 }

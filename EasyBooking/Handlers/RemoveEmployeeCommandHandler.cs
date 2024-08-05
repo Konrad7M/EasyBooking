@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
+using EasyBooking.Domain.Model;
 using EasyBooking.Infrastructure.Database;
 using MediatR;
 
@@ -23,6 +24,12 @@ public class RemoveEmployeeCommandHandler : IRequestHandler<RemoveEmployeeComman
         if (employee == null)
         {
             throw new ArgumentException("cannot remove non existend employee");
+        }
+        bool hasReservations = _context.Reservations
+            .Any(reservation => reservation.ReservingEmployeeId == request.EmployeeId);
+        if (hasReservations) 
+        {
+            throw new ArgumentException("cannot remove employee with reservations");
         }
         _context.Employees.Remove(employee);
         await _context.SaveChangesAsync();

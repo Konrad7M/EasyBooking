@@ -22,7 +22,7 @@ public class Reservation
             throw new ArgumentException("Reservation cannot end before it starts");
         }
 
-        if (fromDate.AddDays(7) > toDate)
+        if (fromDate.AddDays(7) < toDate)
         {
             throw new ArgumentException("Reservation cannot be longer than a week");
         }

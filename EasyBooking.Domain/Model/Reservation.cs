@@ -10,10 +10,10 @@ public class Reservation
 {
     public int Id { get; private set; }
 
-    public int ReservedDeskId { get; private set; }
+    public int ReservedDeskId { get; set; }
     public int ReservingEmployeeId { get; private set; }
-    public DateOnly FromDate { get; private set; }
-    public DateOnly ToDate { get; private set; }
+    public DateOnly FromDate { get;  set; }
+    public DateOnly ToDate { get; set; }
 
     public Reservation(int reservedDeskId, int reservingEmployeeId, DateOnly fromDate, DateOnly toDate)
     {

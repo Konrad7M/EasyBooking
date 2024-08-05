@@ -1,28 +1,34 @@
 using AutoMapper;
-using Moq;
 using Microsoft.EntityFrameworkCore;
 using EasyBooking.Infrastructure.Database;
 using EasyBooking.Api.Handlers;
 using EasyBooking.Api.Commands;
 using EasyBooking.Domain.Model;
 using EasyBooking.Api.Dto;
+using EasyBooking.Api.Mappers;
 
 public class ReserveDeskCommandHandlerTests
 {
-    private readonly Mock<DatabaseContext> _mockContext;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly ReserveDeskCommandHandler _handler;
+    private IMapper _mapper;   
+    DbContextOptions<DatabaseContext> _options;
 
     public ReserveDeskCommandHandlerTests()
     {
-        _mockContext = new Mock<DatabaseContext>();
-        _mockMapper = new Mock<IMapper>();
-        _handler = new ReserveDeskCommandHandler(_mockContext.Object, _mockMapper.Object);
+        _options = new DbContextOptionsBuilder<DatabaseContext>()
+                          .UseInMemoryDatabase(databaseName: "TestDatabase")
+                          .Options;
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<MappingProfile>();
+        });
+        _mapper = config.CreateMapper();
     }
 
     [Fact]
     public async Task Handle_ReservationLongerThan7Days_ShouldThrowArgumentException()
     {
+        var _context = new DatabaseContext(_options);
+        var _handler = new ReserveDeskCommandHandler(_context, _mapper);
         // Arrange
         var command = new ReserveDeskCommand(
             1,
@@ -40,37 +46,41 @@ public class ReserveDeskCommandHandlerTests
     [Fact]
     public async Task Handle_DeskAlreadyReserved_ShouldThrowArgumentException()
     {
+        var _context = new DatabaseContext(_options);
+        var _handler = new ReserveDeskCommandHandler(_context, _mapper);
         // Arrange
-        var command = new ReserveDeskCommand
-        (
+        var command = new ReserveDeskCommand(
             1,
             1,
             DateOnly.FromDateTime(DateTime.Now),
             DateOnly.FromDateTime(DateTime.Now).AddDays(3)
         );
 
-        var reservations = new List<Reservation>
-        {
-            new Reservation ( 1,1, DateOnly.FromDateTime(DateTime.Now).AddDays(1), DateOnly.FromDateTime(DateTime.Now).AddDays(4) )
-        }.AsQueryable();
+        var  conflictReservation = new Reservation(
+            1,
+            1,
+            DateOnly.FromDateTime(DateTime.Now).AddDays(1),
+            DateOnly.FromDateTime(DateTime.Now).AddDays(4)
+        );
 
-        var mockSet = new Mock<DbSet<Reservation>>();
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Provider).Returns(reservations.Provider);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Expression).Returns(reservations.Expression);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.ElementType).Returns(reservations.ElementType);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.GetEnumerator()).Returns(reservations.GetEnumerator());
-
-        _mockContext.Setup(c => c.Reservations).Returns(mockSet.Object);
+        // Seed the in-memory database with a conflicting reservation
+        _context.Reservations.Add(conflictReservation);
+        await _context.SaveChangesAsync();
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
             _handler.Handle(command, CancellationToken.None));
-        Assert.Equal("cannot create reservation, desk is already reserved in this time period", exception.Message);
+        Assert.Equal(
+            "cannot create reservation, desk is already reserved in this time period", 
+            exception.Message
+        );
     }
 
     [Fact]
-    public async Task Handle_DeskAlreadyReserved_ShouldReturnReservationDto()
+    public async Task Handle_DBEmpty_ShouldReturnReservationDto()
     {
+        var _context = new DatabaseContext(_options);
+        var _handler = new ReserveDeskCommandHandler(_context, _mapper); 
         // Arrange
         var command = new ReserveDeskCommand
         (
@@ -80,19 +90,10 @@ public class ReserveDeskCommandHandlerTests
             DateOnly.FromDateTime(DateTime.Now).AddDays(3)
         );
 
-        var reservations = new List<Reservation>().AsQueryable();
-
-        var mockSet = new Mock<DbSet<Reservation>>();
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Provider).Returns(reservations.Provider);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Expression).Returns(reservations.Expression);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.ElementType).Returns(reservations.ElementType);
-        mockSet.As<IQueryable<Reservation>>().Setup(m => m.GetEnumerator()).Returns(reservations.GetEnumerator());
-
-        _mockContext.Setup(c => c.Reservations).Returns(mockSet.Object);
-
-        Assert.Equal(
+        Assert.Equivalent(
             new ReservationDto() {
                 Id = 1,
+                ReservingEmployeeId = 1,
                 ReservedDeskId = 1,
                 FromDate = DateOnly.FromDateTime(DateTime.Now),
                 ToDate= DateOnly.FromDateTime(DateTime.Now).AddDays(3)

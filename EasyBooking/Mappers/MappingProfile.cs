@@ -14,5 +14,7 @@ public class MappingProfile : Profile
         CreateMap<OfficeLocation, OfficeLocationDto>();
         CreateMap<Employee, EmployeeDto>();
         CreateMap<GetDesksCommand, GetDesksQueryDto>();
+        CreateMap<Reservation, ReservationDto>();
+        
     }
 }

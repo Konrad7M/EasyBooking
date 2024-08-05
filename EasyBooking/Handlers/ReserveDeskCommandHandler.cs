@@ -21,10 +21,7 @@ public class ReserveDeskCommandHandler : IRequestHandler<ReserveDeskCommand, Res
     }
 
     public async Task<ReservationDto> Handle(ReserveDeskCommand request, CancellationToken cancellationToken)
-    {// start + 7 < stop
-        // stop - start < 7
-        //  start +7 < 
-        //  start +7 < stop
+    {
         if (request.FromDate.AddDays(7) < request.ToDate) 
         {
             throw new ArgumentException("cannot create reservation for more than 7 days");

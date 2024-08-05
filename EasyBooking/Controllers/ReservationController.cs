@@ -15,14 +15,14 @@ public class ReservationController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("GetDesksByLocation")]
+    [HttpPost("GetDesksByLocation")]
     [ProducesResponseType(typeof(List<DeskDto>), 200)]
     public async Task<IActionResult> GetDesksByLocationId([FromBody] GetDesksQueryDto getDesksQueryDto, CancellationToken cancellationToken)
     {
         return Ok(await _mediator.Send(new GetDesksCommand(getDesksQueryDto.From, getDesksQueryDto.To, getDesksQueryDto.LocationId, getDesksQueryDto.IsAdmin, getDesksQueryDto.ShowAvailableOnly), cancellationToken));
     }
 
-    [HttpPut("ReverveDeskForAPeriod")]
+    [HttpPost("ReverveDeskForAPeriod")]
     [ProducesResponseType(typeof(ReservationDto), 200)]
     public async Task<IActionResult> ReverveDeskForAPeriod([FromBody] ReservationDto reservationDto, CancellationToken cancellationToken)
     {
@@ -36,11 +36,10 @@ public class ReservationController : ControllerBase
         return Ok(await _mediator.Send(new ReserveDeskCommand(reservationDto.ReservingEmployeeId, reservationDto.ReservedDeskId, reservationDto.FromDate, reservationDto.ToDate), cancellationToken));
     }
 
-    [HttpGet("GetReservationsByDeskId")]
+    [HttpPost("GetReservationsByDeskId")]
     [ProducesResponseType(typeof(List<ReservationDto>), 200)]
     public async Task<IActionResult> GetReservationsByDeskID([FromBody] GetDeskReservationsQueryDto getDeskReservationsQueryDto, CancellationToken cancellationToken)
     {
         return Ok(await _mediator.Send(new GetDeskReservationsCommand { DeskId = getDeskReservationsQueryDto.DeskId }));
     }
-
 }

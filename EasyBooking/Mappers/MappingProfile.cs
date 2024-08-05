@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
 using EasyBooking.Domain.Model;
 using EasyBooking.Dto;
@@ -12,6 +13,6 @@ public class MappingProfile : Profile
         CreateMap<Desk, DeskDto>();
         CreateMap<OfficeLocation, OfficeLocationDto>();
         CreateMap<Employee, EmployeeDto>();
-
+        CreateMap<GetDesksCommand, GetDesksQueryDto>();
     }
 }

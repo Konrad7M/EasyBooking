@@ -2,6 +2,7 @@
 using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
 using EasyBooking.Commands;
+using EasyBooking.Domain.Model;
 using EasyBooking.Infrastructure.Database;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,12 @@ public class RemoveDeskCommandHandler : IRequestHandler<RemoveDeskCommand, DeskD
         if (desk == null)
         {
             throw new ArgumentException("cannot remove non existend desk");
+        }
+        bool hasReservations = _context.Reservations
+            .Any(reservation => reservation.ReservedDeskId == request.DeskId);
+        if (hasReservations)
+        {
+            throw new ArgumentException("cannot remove desk with reservations");
         }
         _context.Desks.Remove(desk);
         await _context.SaveChangesAsync();

@@ -31,4 +31,11 @@ public class ReservationController : ControllerBase
     {
         return Ok(await _mediator.Send(new ReserveDeskCommand(reservationDto.ReservingEmployeeId, reservationDto.ReservedDeskId,reservationDto.FromDate, reservationDto.ToDate), cancellationToken));
     }
+
+    [HttpPut("ChangeReservation")]
+    [ProducesResponseType(typeof(ReservationDto), 200)]
+    public async Task<IActionResult> ChangeReservation([FromBody] ReservationDto reservationDto, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new ReserveDeskCommand(reservationDto.ReservingEmployeeId, reservationDto.ReservedDeskId, reservationDto.FromDate, reservationDto.ToDate), cancellationToken));
+    }
 }

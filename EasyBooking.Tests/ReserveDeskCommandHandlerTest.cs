@@ -5,6 +5,7 @@ using EasyBooking.Infrastructure.Database;
 using EasyBooking.Api.Handlers;
 using EasyBooking.Api.Commands;
 using EasyBooking.Domain.Model;
+using EasyBooking.Api.Dto;
 
 public class ReserveDeskCommandHandlerTests
 {
@@ -65,5 +66,38 @@ public class ReserveDeskCommandHandlerTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
             _handler.Handle(command, CancellationToken.None));
         Assert.Equal("cannot create reservation, desk is already reserved in this time period", exception.Message);
+    }
+
+    [Fact]
+    public async Task Handle_DeskAlreadyReserved_ShouldReturnReservationDto()
+    {
+        // Arrange
+        var command = new ReserveDeskCommand
+        (
+            1,
+            1,
+            DateOnly.FromDateTime(DateTime.Now),
+            DateOnly.FromDateTime(DateTime.Now).AddDays(3)
+        );
+
+        var reservations = new List<Reservation>().AsQueryable();
+
+        var mockSet = new Mock<DbSet<Reservation>>();
+        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Provider).Returns(reservations.Provider);
+        mockSet.As<IQueryable<Reservation>>().Setup(m => m.Expression).Returns(reservations.Expression);
+        mockSet.As<IQueryable<Reservation>>().Setup(m => m.ElementType).Returns(reservations.ElementType);
+        mockSet.As<IQueryable<Reservation>>().Setup(m => m.GetEnumerator()).Returns(reservations.GetEnumerator());
+
+        _mockContext.Setup(c => c.Reservations).Returns(mockSet.Object);
+
+        Assert.Equal(
+            new ReservationDto() {
+                Id = 1,
+                ReservedDeskId = 1,
+                FromDate = DateOnly.FromDateTime(DateTime.Now),
+                ToDate= DateOnly.FromDateTime(DateTime.Now).AddDays(3)
+            }, 
+            await _handler.Handle(command, CancellationToken.None)
+        );
     }
 }

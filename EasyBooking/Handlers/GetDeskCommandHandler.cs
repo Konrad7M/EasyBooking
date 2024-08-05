@@ -22,25 +22,23 @@ public class GetDeskCommandHandler : IRequestHandler<GetDesksCommand, List<DeskD
 
     public async Task<List<DeskDto>> Handle(GetDesksCommand query, CancellationToken cancellationToken)
     {
-        var availableDesks = _context.OfficeLocations
+        List<DeskDto> desks = null;
+        desks = _context.OfficeLocations
             .Where(location => location.Id == query.LocationId)
             .SelectMany(location => location.Desks)
-            .GroupJoin(
-                _context.Reservations,
-                desk => desk.Id,
-                reservation => reservation.ReservedDeskId,
-                (desk, reservations) => new { desk, reservations }
-            )
-            .SelectMany(
-                x => x.reservations.DefaultIfEmpty(),
-                (x, reservation) => new { x.desk, reservation }
-            )
-            .Where(x => x.reservation == null ||
-                        !(x.reservation.FromDate < query.To && x.reservation.ToDate > query.From))
-            .Select(x => x.desk)
-            .Distinct()
-            .ToList();
-        return _mapper.Map<List<DeskDto>>(availableDesks);
+            .Select(desk => new DeskDto
+            {
+                Id = desk.Id,
+                IsAvailable = !_context.Reservations
+                   .Any(reservation => reservation.ReservedDeskId == desk.Id &&
+                                       reservation.FromDate < query.To &&
+                                       reservation.ToDate > query.From)
+            }).ToList();
+        if (query.ShowAvailableOnly) {
+            desks.RemoveAll(desk =>  desk.IsAvailable == false);
+        }
+
+        return desks;
 
     }
 }

@@ -37,7 +37,7 @@ public class ReserveDeskCommandHandler : IRequestHandler<ReserveDeskCommand, Res
         }
         var reservation = new Reservation(request.ReservedDeskId,request.ReservingEmployeeId,request.FromDate,request.ToDate);
         _context.Reservations.Add(reservation);
-        _context.SaveChanges(); 
+        _context.SaveChanges();
         return _mapper.Map<ReservationDto>(reservation);
     }
 }

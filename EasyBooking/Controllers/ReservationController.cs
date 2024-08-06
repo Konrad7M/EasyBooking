@@ -40,6 +40,6 @@ public class ReservationController : ControllerBase
     [ProducesResponseType(typeof(List<ReservationDto>), 200)]
     public async Task<IActionResult> GetReservationsByDeskID([FromBody] GetDeskReservationsQueryDto getDeskReservationsQueryDto, CancellationToken cancellationToken)
     {
-        return Ok(await _mediator.Send(new GetDeskReservationsCommand { DeskId = getDeskReservationsQueryDto.DeskId }));
+        return Ok(await _mediator.Send(new GetDeskReservationsCommand { DeskId = getDeskReservationsQueryDto.DeskId, IsAdmin = getDeskReservationsQueryDto.IsAdmin }));
     }
 }

@@ -22,6 +22,11 @@ public class GetDeskReservationsCommandHandler : IRequestHandler<GetDeskReservat
 
     public async Task<List<ReservationDto>> Handle(GetDeskReservationsCommand query, CancellationToken cancellationToken)
     {
+        if (!query.IsAdmin)
+        {
+            // I lacked time to add exception middleware to return http codes and proper credential validation
+            throw new ArgumentException("acces denied");
+        }
         var reservations = _context.Reservations.Where(resersavation => resersavation.ReservedDeskId == query.DeskId);
         return _mapper.Map<List<ReservationDto>>(reservations);        
     }

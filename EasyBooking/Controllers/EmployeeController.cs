@@ -24,6 +24,17 @@ public class EmployeeController : ControllerBase
         return Ok(await _mediator.Send(new AddEmployeeCommand(employeeDto), cancellationToken));
     }
 
+    [HttpPost("Get")]
+    [ProducesResponseType(typeof(EmployeeDto), 200)]
+    public async Task<IActionResult> GetEmployeeById([FromBody] GetEmployeeByIdQueryDto getEmployeeByIdQueryDto, CancellationToken cancellationToken)
+    {
+        return Ok(await _mediator.Send(new GetEmployeeByIdCommand()
+        {
+            EmployeeId = getEmployeeByIdQueryDto.EmployeeId,
+            IsAdmin = getEmployeeByIdQueryDto.IsAdmin
+        }, cancellationToken));
+    }
+
     [HttpDelete("Delete")]
     [ProducesResponseType(typeof(EmployeeDto), 200)]
     public async Task<IActionResult> RemoveEmployee([FromBody] int employeeId, CancellationToken cancellationToken)

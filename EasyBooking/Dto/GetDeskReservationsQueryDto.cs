@@ -4,5 +4,5 @@ public class GetDeskReservationsQueryDto
 {
     public int DeskId { get; set; }
 
-    public bool IsAdmin { get; set; }
+    public bool IsAdmin { get; set; } = false;
 }

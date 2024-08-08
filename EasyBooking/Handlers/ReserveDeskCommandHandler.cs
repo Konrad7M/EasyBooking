@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
-using EasyBooking.Commands;
 using EasyBooking.Domain.Model;
-using EasyBooking.Dto;
 using EasyBooking.Infrastructure.Database;
 using MediatR;
 

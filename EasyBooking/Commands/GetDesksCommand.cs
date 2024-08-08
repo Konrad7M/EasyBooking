@@ -1,5 +1,4 @@
 ﻿using EasyBooking.Api.Dto;
-using EasyBooking.Dto;
 using MediatR;
 
 namespace EasyBooking.Api.Commands;

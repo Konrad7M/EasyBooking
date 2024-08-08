@@ -1,10 +1,11 @@
 ﻿using EasyBooking.Api.Commands;
 using EasyBooking.Api.Dto;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyBooking.Controllers;
-
+[Authorize(AuthenticationSchemes = "BasicAuthentication")]
 [ApiController]
 [Route("api/[controller]")]
 public class ReservationController : ControllerBase

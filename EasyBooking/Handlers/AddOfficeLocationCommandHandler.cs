@@ -4,7 +4,6 @@ using EasyBooking.Domain.Model;
 using EasyBooking.Dto;
 using EasyBooking.Infrastructure.Database;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace EasyBooking.Api.Handlers;
 

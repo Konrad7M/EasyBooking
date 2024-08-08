@@ -1,6 +1,7 @@
+using EasyBooking.Api.Auth;
 using EasyBooking.Infrastructure.Database;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen(options => {
         Type = "string",
         Format = "date"
     });
+    options.OperationFilter<SwaggerHeaderFilter>();
 });
 
 builder.Services.AddControllers();
@@ -28,6 +30,9 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", options => { });
 
 var app = builder.Build();
 
